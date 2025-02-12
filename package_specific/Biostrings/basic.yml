@@ -29,6 +29,8 @@ name: CI4bioc320
 on:
   push:
     branches: [ REL_3_20_ISO ]
+env:
+  _R_CHECK_FORCE_SUGGESTS_: 'FALSE'
 jobs:
   container-test-job:
     runs-on: ubuntu-latest
@@ -43,6 +45,8 @@ jobs:
         run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
       - name: Assess R version
         run: (Rscript -e version)
+      - name: Assess bioc version
+        run: (Rscript -e "BiocManager::version()")
       - name: show path to R
         run: (which R)
       - name: Where am I
@@ -59,5 +63,16 @@ jobs:
         run: (Rscript -e "BiocManager::install(basename(getwd()), ref='RELEASE_3_20', dependencies=TRUE, update=FALSE, Ncpus=2)")
       - name: look at pkgs
         run: (Rscript -e 'print(sort(rownames(installed.packages())))')
+      - name: additional latex packages
+        run: (Rscript -e "tinytex::tlmgr_install('grfext')")
+      - name: additional packages not picked up with above installation
+        run: (Rscript -e "BiocManager::install(c('pwalign', 'hgu95av2probe', 'hgu95av2cdf', 'drosophila2probe'))")
+      - name: more packages not picked up with above installation
+        run: (Rscript -e "BiocManager::install(c('hgu133aprobe', 'affy', 'affydata'))")
+      - name: more pkgs
+        run: |
+          (Rscript -e "BiocManager::install(c('BSgenome', 'BSgenome.Celegans.UCSC.ce2',
+            'BSgenome.Dmelanogaster.UCSC.dm3', 'BSgenome.Hsapiens.UCSC.hg18',
+            'GenomicFeatures', 'testthat', 'covr'), Ncpus=2)")
       - name: do r cmd check
         run: (Rscript -e "rcmdcheck::rcmdcheck()")
