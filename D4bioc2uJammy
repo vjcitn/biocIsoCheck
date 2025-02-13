@@ -1,0 +1,38 @@
+FROM rocker/r2u:jammy
+
+RUN apt update 
+RUN apt install -y texinfo git vim qpdf
+RUN apt install -y libcurl4-openssl-dev 
+# for rcmdcheck via curl
+RUN apt install -y zlib1g-dev 
+# for qpdf
+RUN apt install -y libssl-dev 
+# for httr -> UCSC.utils -> GenomeInfoDb -> GRanges -> SE
+RUN apt install -y libxml2-dev libpng-dev liblzma-dev libbz2-dev 
+# for tximeta, Rhtslib, XML, etc.
+# might as well install pandoc and avoid doing it in action?
+RUN apt install -y pandoc
+
+# Install curl if missing
+RUN apt update -qq
+RUN apt install -y --no-install-recommends curl ca-certificates
+# Run apt script
+
+ENV BIOC_VERSION="3.20"
+ENV UBUNTU_CODENAME="jammy"
+RUN apt update -qq
+RUN curl -o /etc/apt/trusted.gpg.d/bioc2u_key.asc https://mghp.osn.xsede.org/bir190004-bucket01/bioc2u/bioc2u_key.asc
+RUN echo "deb https://mghp.osn.xsede.org/bir190004-bucket01/bioc2u/ $UBUNTU_CODENAME release" | tee -a /etc/apt/sources.list.d/bioc2u.list > /dev/null
+RUN echo "Package: *" > /etc/apt/preferences.d/prefbioc2u
+RUN echo "Pin: origin mghp.osn.xsede.org" >> /etc/apt/preferences.d/prefbioc2u
+RUN echo "Pin-Priority: 800"  >> /etc/apt/preferences.d/prefbioc2u
+RUN apt update -qq
+ENV DEBIAN_FRONTEND=noninteractive 
+RUN apt install -y r-base-core r-cran-biocmanager r-cran-bspm
+RUN Rscript -e "BiocManager::install(version='$BIOC_VERSION', update=TRUE, ask=FALSE)"
+RUN Rscript -e "BiocManager::install(c('devtools'))"
+
+RUN Rscript -e "install.packages(c('BiocCheck', 'BiocStyle', 'knitr', 'rmarkdown', 'rcmdcheck', 'tinytex', 'qpdf'), update=TRUE, ask=FALSE)"
+RUN Rscript -e "library(tinytex); tinytex::install_tinytex(); tinytex::tlmgr_install('courier')"
+ENV PATH="$PATH:/root/.TinyTeX/bin/x86_64-linux"
+
