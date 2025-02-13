@@ -12,6 +12,7 @@ RUN apt install -y libxml2-dev libpng-dev liblzma-dev libbz2-dev
 # for tximeta, Rhtslib, XML, etc.
 # might as well install pandoc and avoid doing it in action?
 RUN apt install -y pandoc
+RUN apt install -y pandoc-citeproc
 
 # Install curl if missing
 RUN apt update -qq
