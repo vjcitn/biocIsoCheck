@@ -4,7 +4,7 @@ Isolating container and GH action workflow definition for isolated checking.  A
 key element is using prebuilt binaries from bioc2u and r2u, thus not working in
 devel branch.
 
-We have a basic.yml that will use the container defined in Dockerfile.3_20_ISO
+We have a basic.yml that will use the container defined in D4bioc2uJammy
 to perform rcmdcheck on a checked out repository, assumed to have a branch REL_3_20_ISO
 
 The odd nomenclature in use is intended to avoid confusion with standard operations
@@ -37,5 +37,3 @@ RUN apt install -y libxml2-dev libpng-dev liblzma-dev libbz2-dev
 #
 ```
 
-Working on Biostrings suggests that various annotation packages aren't covered
-in bioc2u, but it is not clear why the installation process doesn't get them.
