@@ -1,13 +1,15 @@
 FROM ghcr.io/bioconductor/bioc2u-builder:jammy-bioc-3.20
 ENV BIOC_VERSION="3.20"
 
-RUN apt install -y pandoc texinfo qpdf
+RUN apt install -y pandoc texinfo qpdf pandoc-citeproc
 
 RUN Rscript -e "BiocManager::install(version='$BIOC_VERSION', update=TRUE, ask=FALSE)"
 RUN Rscript -e "BiocManager::install(c('devtools'))"
 
 RUN Rscript -e "BiocManager::install(c('BiocCheck', 'BiocStyle', 'knitr', 'rmarkdown', 'rcmdcheck', 'tinytex', 'qpdf'), update=TRUE, ask=FALSE)"
 RUN Rscript -e "library(tinytex); tinytex::install_tinytex(); tinytex::tlmgr_install('courier')"
+RUN Rscript -e "library(tinytex);  tinytex::tlmgr_install('grfext'); tinytex::tlmgr_install('pdfpages')"
+RUN Rscript -e "library(tinytex);  tinytex::tlmgr_install('pdflscape')"
 ENV PATH="$PATH:/root/.TinyTeX/bin/x86_64-linux"
 
 # OLD CODE, preceding bioc2u-builder:
