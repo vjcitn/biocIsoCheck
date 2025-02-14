@@ -72,18 +72,7 @@ Example 7: Rgraphviz, passed but
     src/libwin/i386/lib/libgvc.a src/libwin/i386/lib/libgvc.la
 ```
 
+The associated Dockerfile is [here](https://github.com/vjcitn/biocIsoCheck/blob/main/D4bioc2uJammy)
+and the current action workflow is [here](https://github.com/vjcitn/biocIsoCheck/blob/main/basic.yml).
 
-As I tried to use a simple action to work on DESeq2, I found it necessary to
-add most of the components noted here:
-
-```
-RUN apt install -y libcurl4-openssl-dev
-# for rcmdcheck via curl
-RUN apt install -y zlib1g-dev
-# for qpdf
-RUN apt install -y libssl-dev
-# for httr -> UCSC.utils -> GenomeInfoDb -> GRanges -> SE
-RUN apt install -y libxml2-dev libpng-dev liblzma-dev libbz2-dev
-#
-```
 
