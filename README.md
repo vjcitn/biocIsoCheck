@@ -4,10 +4,18 @@ Isolating container and GH action workflow definition for isolated checking.  A
 key element is using prebuilt binaries from bioc2u-builder (thus also from r2u), thus **not working in
 devel branch**.
 
-We have a basic.yml that will use the container defined in D4bioc2uJammy
-to perform rcmdcheck on a checked out repository, assumed to have a branch REL_3_20_ISO
+Basic objectives:
+- use the bioc2u-builder container to take advantage of existing 'R CMD build' infrastructure from r2u,
+- use existing binaries to resolve all necessary dependencies
+- provide some additional text processing support for vignettes
+- allow an isolated developer to get the fastest possible assessment of effects of source changes through a github action using the container defined by the above Dockerfile
 
-The odd nomenclature in use is intended to avoid confusion with standard operations
+
+We have a [basic.yml](https://github.com/vjcitn/biocIsoCheck/blob/main/basic.yml)
+that will use the container defined [here](https://github.com/vjcitn/biocIsoCheck/blob/main/D4bioc2uJammy)
+to perform rcmdcheck on a checked out repository, assumed to have a branch `REL_3_20_ISO`.
+
+The odd nomenclature in use is intended to avoid confusion with standard operations.
 
 A basic question is how to balance the possible idiosyncrasies of developer contributions
 with a concept of standard environment that builds and checks the vast majority of
@@ -43,7 +51,8 @@ LaTeX errors:
 ! LaTeX Error: File `beamer.cls' not found.
 ```
 
-Here we have to decide whether to enrich the building container or to leave this to the developer.
+Here we have to decide whether to enrich the building container or to leave this to the
+contributing developer.
 
 Example 6: limma passed but gave
 ```
